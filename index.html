@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoHub — сообщество любителей Roblox</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2300a2ff'/><rect x='24' y='24' width='52' height='52' rx='8' fill='white' transform='rotate(12 50 50)'/></svg>">
+<style>
+:root{
+  --bg:#f5f7fa; --surface:#fff; --text:#111827; --muted:#6b7280;
+  --border:#e5e9ef; --accent:#00a2ff; --accent-dark:#0086d6; --accent-soft:#eaf6ff;
+  --green:#00b06f; --red:#ef4444; --purple:#7c5cff;
+  --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{letter-spacing:-.02em;margin:0}
+.container{max-width:1080px;margin:0 auto;padding:0 16px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.row{display:flex;gap:12px;align-items:center}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px}
+main.main{padding:24px 16px 60px;min-height:calc(100vh - 170px)}
+
+/* ---------- Кнопки ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px 16px;border-radius:10px;border:1px solid var(--border);
+  background:#fff;color:var(--text);font:inherit;font-weight:600;font-size:14px;
+  cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#cfd6df;transform:translateY(-1px);text-decoration:none;
+  box-shadow:0 4px 12px rgba(16,24,40,.08)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+.btn-soft{background:var(--accent-soft);border-color:transparent;color:var(--accent-dark)}
+.btn-danger{color:var(--red);border-color:#f3d0d0;background:#fff}
+.btn-danger:hover{background:#fef2f2;border-color:var(--red)}
+.btn-sm{padding:6px 12px;font-size:13px;border-radius:9px}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.icon-btn{border:0;background:transparent;color:var(--muted);font-size:15px;
+  cursor:pointer;padding:4px 8px;border-radius:8px}
+.icon-btn:hover{background:#f1f3f6;color:var(--red)}
+
+/* ---------- Шапка ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.topbar-inner{display:flex;align-items:center;gap:18px;height:62px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;
+  color:var(--text);letter-spacing:-.03em}
+.logo:hover{text-decoration:none}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--accent);
+  color:#fff;display:grid;place-items:center;font-size:17px;font-weight:800;
+  transform:rotate(-6deg);box-shadow:0 4px 10px rgba(0,162,255,.35)}
+.search{flex:1;max-width:320px;position:relative}
+.search input{width:100%;padding:9px 14px;border:1px solid var(--border);
+  border-radius:999px;background:#f3f5f8;font:inherit;font-size:14px;transition:.15s}
+.search input:focus{outline:none;background:#fff;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(0,162,255,.15)}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{padding:8px 14px;border-radius:10px;color:var(--muted);font-weight:600;font-size:14px}
+.nav a:hover{background:#f1f3f6;color:var(--text);text-decoration:none}
+.nav a.active{background:var(--accent-soft);color:var(--accent-dark)}
+.userbox{display:flex;align-items:center;gap:10px}
+.userbox .uname{font-weight:600;font-size:14px;color:var(--text)}
+.userbox .uname:hover{text-decoration:none;color:var(--accent)}
+
+/* ---------- Подвал ---------- */
+.footer{border-top:1px solid var(--border);background:#fff;padding:22px 0;
+  color:var(--muted);font-size:13px}
+.footer .row{justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* ---------- Карточки ---------- */
+.card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-pad{padding:18px 20px}
+.section-title{font-size:18px;font-weight:700;margin:26px 0 14px}
+.section-row{display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;margin:26px 0 14px}
+.section-row .section-title{margin:0}
+.grid-2{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+.stack{display:grid;gap:14px}
+
+/* ---------- Герой ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center;
+  padding:38px 36px;background:linear-gradient(135deg,#eaf6ff 0%,#ffffff 62%);overflow:hidden}
+.hero h1{font-size:34px;line-height:1.15;margin:12px 0 12px}
+.hero p{color:var(--muted);font-size:16px;margin:0 0 20px;max-width:52ch}
+.hero-badge{display:inline-block;background:#dff2ff;color:#0284c7;font-size:12px;
+  font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.02em}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero-art{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.art-tile{background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:18px 12px;text-align:center;box-shadow:var(--shadow)}
+.art-tile span{font-size:30px;display:block;margin-bottom:6px}
+.art-tile b{font-size:13px;display:block}
+.art-tile i{font-style:normal;font-size:12px;color:var(--muted)}
+.art-tile:nth-child(2){transform:translateY(14px)}
+.art-tile:nth-child(3){transform:translateY(-10px)}
+
+/* ---------- Фичи ---------- */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.feature{padding:20px}
+.feature .fico{width:42px;height:42px;border-radius:12px;display:grid;
+  place-items:center;font-size:20px;background:var(--accent-soft);margin-bottom:12px}
+.feature h3{font-size:15px;margin-bottom:6px}
+.feature p{margin:0;color:var(--muted);font-size:13.5px}
+
+/* ---------- Приветствие ---------- */
+.greet{padding:22px 24px;display:flex;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;align-items:center;
+  background:linear-gradient(120deg,#ffffff 55%,#eaf6ff)}
+.greet h1{font-size:23px;margin-bottom:4px}
+.stats{display:flex;gap:30px;flex-wrap:wrap}
+.stat b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.stat span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+/* ---------- Аватары ---------- */
+.avatar{border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;
+  font-weight:700;user-select:none;box-shadow:inset 0 -6px 14px rgba(0,0,0,.12)}
+.online{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--green);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block}
+.dot.off{background:#cbd5e1}
+
+/* ---------- Стена / посты ---------- */
+.composer{padding:16px 18px}
+.composer textarea{flex:1;min-height:74px;resize:vertical;padding:11px 13px;
+  border:1px solid var(--border);border-radius:12px;font:inherit;font-size:15px;
+  background:#fafbfc;transition:.15s}
+.composer textarea:focus{outline:none;background:#fff;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(0,162,255,.14)}
+.composer-foot{display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-top:10px;flex-wrap:wrap}
+.post{padding:16px 18px}
+.post-head{display:flex;gap:12px;align-items:flex-start}
+.post-author{font-weight:700;font-size:14.5px}
+.post-author a{color:var(--text)}
+.post-author a:hover{color:var(--accent);text-decoration:none}
+.post-author .muted{font-weight:500}
+.post-meta{font-size:12.5px;color:var(--muted)}
+.post-meta a{color:var(--muted)}
+.post-text{margin:12px 0 4px;white-space:pre-wrap;font-size:15px}
+.hl{color:var(--accent-dark);font-weight:600;cursor:pointer;background:var(--accent-soft);
+  padding:1px 4px;border-radius:6px}
+.post-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.post-actions{display:flex;gap:6px;align-items:center;margin-top:12px;
+  padding-top:11px;border-top:1px solid #f0f2f5}
+.post-btn{border:0;background:transparent;font:inherit;font-size:13.5px;font-weight:600;
+  color:var(--muted);padding:6px 11px;border-radius:9px;cursor:pointer;transition:.13s}
+.post-btn:hover{background:#f1f3f6;color:var(--text)}
+.post-btn.liked{background:#fff0f3;color:#e5484d}
+.comments{margin-top:12px;border-top:1px solid #f0f2f5;padding-top:12px;display:grid;gap:12px}
+.comment{display:flex;gap:10px}
+.comment-bubble{background:#f5f7fa;border-radius:12px;padding:9px 13px;flex:1}
+.comment-bubble b{font-size:13.5px}
+.comment-bubble p{margin:3px 0 0;font-size:14px}
+.comment-form{display:flex;gap:10px;align-items:center}
+.comment-form input{flex:1;padding:9px 13px;border:1px solid var(--border);
+  border-radius:999px;font:inherit;font-size:14px;background:#fafbfc}
+.comment-form input:focus{outline:none;background:#fff;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(0,162,255,.14)}
+
+/* ---------- Вкладки и чипы ---------- */
+.tabs-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:20px 0 12px}
+.tabs{display:flex;gap:4px;background:#eceff3;padding:4px;border-radius:12px}
+.tab{border:0;background:transparent;font:inherit;font-size:13.5px;font-weight:600;
+  color:var(--muted);padding:7px 15px;border-radius:9px;cursor:pointer;transition:.13s}
+.tab:hover{color:var(--text)}
+.tab.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(16,24,40,.12)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1px solid var(--border);background:#fff;border-radius:999px;
+  padding:5px 13px;font-size:13px;cursor:pointer;color:var(--muted);font-weight:600;transition:.13s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.tag{font-weight:600}
+.chip.cat{cursor:default;background:#f3f5f8;border-color:transparent;color:var(--muted)}
+
+/* ---------- Группы ---------- */
+.group-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.group-card{overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+.group-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(16,24,40,.11)}
+.group-banner{display:grid;place-items:center;height:86px;font-size:38px;
+  background:linear-gradient(135deg,var(--gc,#00a2ff),color-mix(in srgb,var(--gc,#00a2ff) 45%,#fff));
+  text-decoration:none}
+.group-banner:hover{text-decoration:none;filter:brightness(1.03)}
+.group-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.group-body h3{font-size:15.5px}
+.group-body h3 a{color:var(--text)}
+.group-body h3 a:hover{color:var(--accent);text-decoration:none}
+.group-body p{margin:0;color:var(--muted);font-size:13.5px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.group-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:auto}
+.badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent-dark)}
+.badge.owner{background:#efe9ff;color:var(--purple)}
+.badge.green{background:#e3f9ef;color:var(--green)}
+
+/* ---------- Группа (страница) ---------- */
+.group-hero{overflow:hidden}
+.group-hero .gbanner{height:150px;background:linear-gradient(135deg,var(--gc,#00a2ff),
+  color-mix(in srgb,var(--gc,#00a2ff) 40%,#fff));display:grid;place-items:center;font-size:64px}
+.group-hero .gbody{padding:0 26px 24px;margin-top:-40px;position:relative}
+.group-hero .gavatar{width:84px;height:84px;border-radius:22px;font-size:40px;
+  border:5px solid #fff;box-shadow:var(--shadow)}
+.group-hero h1{font-size:24px;margin-top:12px}
+.group-hero .gdesc{color:var(--muted);max-width:70ch;margin:8px 0 0}
+
+/* ---------- Профиль ---------- */
+.profile-head{padding:26px}
+.profile-top{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.profile-info h1{font-size:24px}
+.profile-info .handle{color:var(--muted);font-weight:600}
+.profile-bio{margin:8px 0 0;color:#374151}
+.profile-actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.profile-stats{display:flex;gap:34px;flex-wrap:wrap;margin-top:20px;
+  padding-top:18px;border-top:1px solid #f0f2f5}
+.user-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.user-card{display:flex;gap:12px;align-items:center;padding:13px 15px}
+.user-card .uinfo{flex:1;min-width:0}
+.user-card b{font-size:14.5px;display:block}
+.user-card b a{color:var(--text)}
+.user-card b a:hover{color:var(--accent);text-decoration:none}
+.user-card p{margin:2px 0 0;font-size:13px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- Авторизация ---------- */
+.auth-wrap{max-width:430px;margin:34px auto}
+.auth-card{padding:28px}
+.auth-card h1{font-size:22px;margin-bottom:4px}
+.auth-tabs{display:flex;gap:4px;background:#eceff3;padding:4px;border-radius:12px;margin:18px 0 20px}
+.auth-tabs .tab{flex:1;text-align:center}
+.field{margin-bottom:14px}
+.label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:10px;
+  font:inherit;font-size:15px;background:#fff;transition:.15s}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,162,255,.14)}
+select.input{cursor:pointer}
+.err{color:var(--red);font-size:13px;min-height:18px;margin:6px 0 0;font-weight:600}
+.hint{font-size:13px;background:#f3f7fb;border:1px dashed #cfe3f3;color:#41627c;
+  padding:10px 13px;border-radius:10px;margin-top:14px}
+.hint code{background:#fff;padding:1px 6px;border-radius:5px;font-weight:700}
+.pickers{display:flex;gap:8px;flex-wrap:wrap}
+.pick-emoji{width:38px;height:38px;border-radius:10px;border:2px solid var(--border);
+  background:#fff;font-size:18px;cursor:pointer;transition:.12s}
+.pick-emoji:hover{border-color:#cfd6df}
+.pick-emoji.on{border-color:var(--accent);background:var(--accent-soft)}
+.pick-color{width:30px;height:30px;border-radius:50%;border:3px solid #fff;
+  outline:1px solid var(--border);cursor:pointer;transition:.12s}
+.pick-color.on{outline:3px solid var(--accent);transform:scale(1.08)}
+
+/* ---------- Модалки ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:60;
+  display:grid;place-items:center;padding:16px;animation:fade .15s ease}
+.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;
+  border-radius:16px;box-shadow:0 24px 60px rgba(16,24,40,.3);animation:pop .18s ease}
+.modal-head{display:flex;justify-content:space-between;align-items:center;
+  padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-head h2{font-size:17px}
+.modal-body{padding:20px 22px}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;
+  padding:16px 22px;border-top:1px solid var(--border);background:#fafbfc}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.96) translateY(8px)}}
+
+/* ---------- Пустые состояния, тосты ---------- */
+.empty{padding:44px 24px;text-align:center;border:2px dashed var(--border);
+  border-radius:var(--radius);background:#fbfcfe;color:var(--muted)}
+.empty .eico{font-size:34px;display:block;margin-bottom:10px}
+.toasts{position:fixed;right:18px;bottom:18px;z-index:90;display:grid;gap:10px}
+.toast{background:#fff;border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600;
+  box-shadow:0 12px 30px rgba(16,24,40,.16);animation:slide .25s ease;max-width:320px}
+.toast.ok{border-left-color:var(--green)}
+.toast.bad{border-left-color:var(--red)}
+@keyframes slide{from{opacity:0;transform:translateX(30px)}}
+
+/* ---------- Адаптив ---------- */
+@media(max-width:960px){
+  .grid-2{grid-template-columns:1fr}
+  .group-grid{grid-template-columns:repeat(2,1fr)}
+  .features{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .search{display:none}
+  .hero{grid-template-columns:1fr;padding:26px 22px}
+  .hero-art{display:none}
+  .hero h1{font-size:27px}
+  .group-grid,.user-list{grid-template-columns:1fr}
+  .nav a{padding:8px 10px}
+  .userbox .uname{display:none}
+  .profile-actions{margin-left:0}
+  .topbar-inner{gap:10px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toasts" id="toasts"></div>
+<script>
+/* =====================================================
+   RoHub — демо-сообщество игроков Roblox
+   Все данные хранятся в localStorage браузера
+   ===================================================== */
+'use strict';
+
+const DB_KEY = 'rohub_db_v1';
+const SESSION_KEY = 'rohub_session_v1';
+const DEMO_PASS = '123456';
+const NOW = Date.now(), MIN = 60000, HOUR = 3600000, DAY = 86400000;
+
+/* ---------- Генерация данных ---------- */
+function uid(p){ return p + Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-4); }
+const mkComment = (a, text, ago) => ({ id: uid('c'), authorId: a, text, createdAt: NOW - ago });
+const mkPost = (id, a, text, tags, ago, likes, comments, groupId) =>
+  ({ id, authorId: a, text, tags, groupId: groupId || null, createdAt: NOW - ago,
+     likes: likes || [], comments: comments || [] });
+
+function seedDB(){
+  const users = [
+    { id:'u1', username:'BlockMaster', password:DEMO_PASS, name:'Артём Блоков',
+      bio:'Строю города в Roblox с 2018 года 🏗️', status:'Строит новый город',
+      emoji:'😎', color:'#00a2ff', online:true, friends:['u3','u5'], createdAt: NOW - 420*DAY },
+    { id:'u2', username:'LuckyKat', password:DEMO_PASS, name:'Аня Кот',
+      bio:'Люблю Adopt Me и редких питомцев 🐾', status:'Ищет обмен',
+      emoji:'🐱', color:'#ff6b9d', online:true, friends:['u4','u6'], createdAt: NOW - 300*DAY },
+    { id:'u3', username:'NinjaDev', password:DEMO_PASS, name:'Никита Разработчик',
+      bio:'Делаю свои игры в Roblox Studio ⚙️', status:'Пишет обновление',
+      emoji:'🥷', color:'#7c5cff', online:false, friends:['u1','u5'], createdAt: NOW - 510*DAY },
+    { id:'u4', username:'Sunshine', password:DEMO_PASS, name:'Мила Солнечная',
+      bio:'Brookhaven навсегда ☀️', status:'Гуляет по Brookhaven',
+      emoji:'🌸', color:'#ffb703', online:true, friends:['u1','u2'], createdAt: NOW - 150*DAY },
+    { id:'u5', username:'ProSkater', password:DEMO_PASS, name:'Тимур Про',
+      bio:'Стримлю Roblox каждый вечер 🎮', status:'Готовит стрим',
+      emoji:'🛹', color:'#00b06f', online:true, friends:['u1','u3','u6'], createdAt: NOW - 260*DAY },
+    { id:'u6', username:'QueenBee', password:DEMO_PASS, name:'София Королева',
+      bio:'Blox Fruits — моя страсть 🍉', status:'Фармит фрукты',
+      emoji:'👑', color:'#ff4d4f', online:false, friends:['u2','u5'], createdAt: NOW - 95*DAY }
+  ];
+  const groups = [
+    { id:'g1', name:'Клуб строителей', emoji:'🏗️', color:'#00a2ff', category:'Строительство',
+      desc:'Строим вместе: дома, города, парки. Делимся схемами и идеями из Roblox Studio.',
+      ownerId:'u1', members:['u1','u3','u5'], createdAt: NOW - 300*DAY },
+    { id:'g2', name:'Adopt Me — обмен', emoji:'🐾', color:'#ff6b9d', category:'Игры',
+      desc:'Честные обмены в Adopt Me. Ищете редкого питомца — вам сюда!',
+      ownerId:'u2', members:['u2','u4','u6'], createdAt: NOW - 210*DAY },
+    { id:'g3', name:'Роблокс-разработчики', emoji:'⚙️', color:'#7c5cff', category:'Разработка',
+      desc:'Lua, скрипты, модели и помощь с багами. Для тех, кто делает свои игры.',
+      ownerId:'u3', members:['u3','u5','u1'], createdAt: NOW - 380*DAY },
+    { id:'g4', name:'Фан-клуб Brookhaven', emoji:'🏡', color:'#ffb703', category:'Игры',
+      desc:'Все про Brookhaven RP: туры по домам, скриншоты и ролики.',
+      ownerId:'u4', members:['u4','u2','u6'], createdAt: NOW - 120*DAY },
+    { id:'g5', name:'Blox Fruits Россия', emoji:'🍉', color:'#00b06f', category:'Игры',
+      desc:'Гайды, рейды и обмен фруктами. Присоединяйся, если фармишь как мы!',
+      ownerId:'u6', members:['u6','u2','u5'], createdAt: NOW - 70*DAY },
+    { id:'g6', name:'Стримеры Roblox', emoji:'🎮', color:'#00a2ff', category:'Стримы',
+      desc:'Анонсы стримов, совместные эфиры и раздача премок.',
+      ownerId:'u5', members:['u5','u1','u6'], createdAt: NOW - 55*DAY }
+  ];
+  const posts = [
+    mkPost('p1','u1','Наконец закончил свой город в Brookhaven 🏙️ Дом на 4 этажа, парк и даже ночной клуб! Заходите — покажу. #билдерство #brookhaven',
+      ['билдерство','brookhaven'], 40*MIN, ['u2','u4','u5'],
+      [mkComment('u4','Огонь! А адрес как узнать?', 30*MIN), mkComment('u1','Пишу в лс!', 22*MIN)]),
+    mkPost('p2','u2','Обмен в Adopt Me: отдаю Кримзона Дракона 🐉 за 2 летних питомца. Кто торгуется? #адопми',
+      ['адопми'], 2*HOUR, ['u4','u6'],
+      [mkComment('u6','Беру! Пишем в личку 🙌', 90*MIN)]),
+    mkPost('p3','u3','Моя игра «Побег из тюрьмы» набрала 10 000 посещений! Спасибо всем, кто заходил. Обновление уже в разработке 🚀 #разработка',
+      ['разработка'], 5*HOUR, ['u1','u5'],
+      [mkComment('u5','Жду обновление, игра топ!', 4*HOUR)]),
+    mkPost('p4','u4','Тур по моему дому в Brookhaven — снимала видео, будет на канале завтра 🎬 #brookhaven #видео',
+      ['brookhaven','видео'], 8*HOUR, ['u2'], []),
+    mkPost('p5','u5','Стрим сегодня в 19:00! Будем проходить Doors с подписчиками. Заходите, раздаю премки 🎁 #стримы',
+      ['стримы'], 1*DAY, ['u1','u6'],
+      [mkComment('u1','Обязательно зайду!', 20*HOUR)]),
+    mkPost('p6','u6','Составила топ-5 фруктов в Blox Fruits для новичков 🍉 Пиши в комментах, какой фрукт у тебя! #bloxfruits',
+      ['bloxfruits'], 1.5*DAY, ['u2','u5'],
+      [mkComment('u2','А как получить Легенду?', 30*HOUR), mkComment('u6','Фарм на острове 3, проверено!', 29*HOUR)]),
+    mkPost('p7','u1','Кто-нибудь строит вместе? Ищу напарника для большого проекта — торговый центр 🏗️ #билдерство',
+      ['билдерство'], 2*DAY, ['u3'], []),
+    mkPost('p8','u3','Полезный совет: в Roblox Studio увеличьте число шагов отмены до 200 — спасёт от случайного удаления всей карты 😅 #разработка #советы',
+      ['разработка','советы'], 3*DAY, ['u1','u4','u5'], []),
+    mkPost('p9','u5','Мой рекорд в Tower of Hell: 47 секунд ⏱️ Кто быстрее? #towerofhell',
+      ['towerofhell'], 4*DAY, ['u2','u6'], []),
+    mkPost('p10','u4','Нашла самый уютный сервер в Brookhaven: все строят вместе и не гриферят 🥰 #brookhaven',
+      ['brookhaven'], 5*DAY, ['u2'], [])
+  ];
+  return { users, groups, posts };
+}
+
+/* ---------- Хранилище ---------- */
+let db = loadDB();
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && Array.isArray(parsed.users) && Array.isArray(parsed.groups) && Array.isArray(parsed.posts)) return parsed;
+    }
+  }catch(e){ console.warn('Не удалось прочитать данные, создаю заново', e); }
+  const fresh = seedDB();
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(fresh)); }catch(e){}
+  return fresh;
+}
+function save(){ try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); }catch(e){ toast('Ошибка сохранения данных','bad'); } }
+
+/* ---------- Утилиты ---------- */
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function plural(n, forms){
+  const n10 = n % 10, n100 = n % 100;
+  if(n10 === 1 && n100 !== 11) return forms[0];
+  if(n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) return forms[1];
+  return forms[2];
+}
+function timeAgo(ts){
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if(s < 60) return 'только что';
+  const m = Math.floor(s / 60); if(m < 60) return m + ' мин назад';
+  const h = Math.floor(m / 60); if(h < 24) return h + ' ч назад';
+  const d = Math.floor(h / 24); if(d < 7) return d + ' дн назад';
+  return new Date(ts).toLocaleDateString('ru-RU', { day:'numeric', month:'long' });
+}
+function dateFull(ts){
+  return new Date(ts).toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' });
+}
+function userById(id){ return db.users.find(u => u.id === id) || null; }
+function groupById(id){ return db.groups.find(g => g.id === id) || null; }
+function me(){ return userById(sessionId); }
+function friendsOf(id){
+  const u = userById(id); if(!u) return [];
+  return (u.friends || []).map(userById).filter(Boolean);
+}
+function isFriend(a, b){
+  const u = userById(a); return !!u && (u.friends || []).includes(b);
+}
+function userPosts(id){ return db.posts.filter(p => p.authorId === id); }
+function userGroups(id){ return db.groups.filter(g => g.members.includes(id)); }
+function likesReceived(id){ return userPosts(id).reduce((s, p) => s + p.likes.length, 0); }
+function postCountOfGroup(gid){ return db.posts.filter(p => p.groupId === gid).length; }
+
+/* ---------- Сессия ---------- */
+let sessionId = null;
+try{ sessionId = localStorage.getItem(SESSION_KEY); }catch(e){}
+if(sessionId && !userById(sessionId)) sessionId = null;
+
+function login(username, password){
+  const u = db.users.find(x => x.username.toLowerCase() === String(username).trim().toLowerCase());
+  if(!u) return { ok:false, error:'Игрок с таким ником не найден' };
+  if(u.password !== password) return { ok:false, error:'Неверный пароль' };
+  sessionId = u.id;
+  try{ localStorage.setItem(SESSION_KEY, u.id); }catch(e){}
+  return { ok:true };
+}
+function logout(){
+  sessionId = null;
+  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+  location.hash = '#/';
+}
+function register(data){
+  const username = data.username.trim();
+  if(!/^[A-Za-z0-9_]{3,20}$/.test(username))
+    return { ok:false, error:'Ник: 3–20 символов, латиница, цифры и _' };
+  if(db.users.some(u => u.username.toLowerCase() === username.toLowerCase()))
+    return { ok:false, error:'Такой ник уже занят' };
+  if(!data.name.trim()) return { ok:false, error:'Введите отображаемое имя' };
+  if(String(data.password).length < 4)
+    return { ok:false, error:'Пароль от 4 символов' };
+  if(data.password !== data.password2)
+    return { ok:false, error:'Пароли не совпадают' };
+  const u = {
+    id: uid('u'), username, password: String(data.password),
+    name: data.name.trim(), bio: '', status: 'Только что присоединился',
+    emoji: data.emoji || '🙂', color: data.color || '#00a2ff',
+    online: true, friends: [], createdAt: Date.now()
+  };
+  db.users.push(u); save();
+  sessionId = u.id;
+  try{ localStorage.setItem(SESSION_KEY, u.id); }catch(e){}
+  return { ok:true, user:u };
+}
+/* ---------- Состояние интерфейса ---------- */
+const ui = {
+  wallFilter:'all', wallTag:null, profTab:'posts',
+  groupTab:'wall', groupCat:'Все', authEmoji:null, authColor:null,
+  openComments:new Set(), modal:null
+};
+
+/* ---------- Тосты ---------- */
+function toast(msg, kind){
+  const box = document.getElementById('toasts');
+  if(!box) return;
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 2400);
+  setTimeout(() => el.remove(), 2800);
+}
+
+/* ---------- Действия ---------- */
+function toggleLike(id){
+  if(!sessionId){ location.hash = '#/auth'; return; }
+  const p = db.posts.find(x => x.id === id); if(!p) return;
+  const i = p.likes.indexOf(sessionId);
+  if(i >= 0) p.likes.splice(i, 1); else p.likes.push(sessionId);
+  save(); render(true);
+}
+function deletePost(id){
+  const p = db.posts.find(x => x.id === id); if(!p) return;
+  if(p.authorId !== sessionId) return;
+  if(!confirm('Удалить пост?')) return;
+  db.posts = db.posts.filter(x => x.id !== id);
+  ui.openComments.delete(id);
+  save(); toast('Пост удалён'); render(true);
+}
+function toggleComments(id){
+  if(ui.openComments.has(id)) ui.openComments.delete(id);
+  else ui.openComments.add(id);
+  render(true);
+}
+function addComment(postId, text){
+  if(!sessionId){ location.hash = '#/auth'; return false; }
+  const p = db.posts.find(x => x.id === postId); if(!p) return false;
+  text = String(text || '').trim();
+  if(!text) return false;
+  p.comments.push(mkComment(sessionId, text, 0));
+  save(); render(true);
+  return true;
+}
+function deleteComment(postId, commentId){
+  const p = db.posts.find(x => x.id === postId); if(!p) return;
+  p.comments = p.comments.filter(c => c.id !== commentId);
+  save(); render(true);
+}
+function createPost(text, groupId){
+  if(!sessionId){ location.hash = '#/auth'; return false; }
+  text = String(text || '').trim();
+  if(!text){ return false; }
+  const tags = [];
+  const re = /#([\wа-яё\-]{2,20})/gi;
+  let m;
+  while((m = re.exec(text)) !== null){
+    const t = m[1];
+    if(!tags.some(x => x.toLowerCase() === t.toLowerCase())) tags.push(t);
+  }
+  const p = mkPost(uid('p'), sessionId, text, tags, 0, [], []);
+  p.groupId = groupId || null;
+  db.posts.unshift(p); save();
+  toast('Опубликовано!', 'ok');
+  return true;
+}
+function toggleGroup(id){
+  if(!sessionId){ location.hash = '#/auth'; return; }
+  const g = groupById(id); if(!g) return;
+  if(g.ownerId === sessionId){ toast('Владелец не может выйти из своей группы', 'bad'); return; }
+  const i = g.members.indexOf(sessionId);
+  if(i >= 0){ g.members.splice(i, 1); toast('Вы вышли из группы'); }
+  else { g.members.push(sessionId); toast('Вы вступили в группу!', 'ok'); }
+  save(); render(true);
+}
+function deleteGroup(id){
+  const g = groupById(id); if(!g || g.ownerId !== sessionId) return;
+  if(!confirm('Удалить группу и её посты?')) return;
+  db.groups = db.groups.filter(x => x.id !== id);
+  db.posts = db.posts.filter(p => p.groupId !== id);
+  save(); toast('Группа удалена');
+  location.hash = '#/groups';
+}
+function toggleFriend(id){
+  if(!sessionId){ location.hash = '#/auth'; return; }
+  if(id === sessionId) return;
+  const a = userById(sessionId), b = userById(id);
+  if(!a || !b) return;
+  a.friends = a.friends || []; b.friends = b.friends || [];
+  if(a.friends.includes(id)){
+    a.friends = a.friends.filter(x => x !== id);
+    b.friends = b.friends.filter(x => x !== sessionId);
+    toast('Игрок убран из друзей');
+  }else{
+    a.friends.push(id); b.friends.push(sessionId);
+    toast('Теперь вы друзья!', 'ok');
+  }
+  save(); render(true);
+}
+function createGroup(data){
+  if(!sessionId) return { ok:false, error:'Нужно войти в аккаунт' };
+  const name = String(data.name || '').trim();
+  if(name.length < 3) return { ok:false, error:'Название от 3 символов' };
+  const g = {
+    id: uid('g'), name, emoji: data.emoji || '🎮', color: data.color || '#00a2ff',
+    category: data.category || 'Другое', desc: String(data.desc || '').trim() || 'Без описания',
+    ownerId: sessionId, members: [sessionId], createdAt: Date.now()
+  };
+  db.groups.unshift(g); save();
+  return { ok:true, group:g };
+}
+function saveProfile(data){
+  const u = me(); if(!u) return { ok:false, error:'Нет пользователя' };
+  const name = String(data.name || '').trim();
+  if(!name) return { ok:false, error:'Имя не может быть пустым' };
+  if(data.password && String(data.password).length < 4)
+    return { ok:false, error:'Новый пароль от 4 символов' };
+  if(data.password && data.password !== data.password2)
+    return { ok:false, error:'Пароли не совпадают' };
+  u.name = name;
+  u.bio = String(data.bio || '').trim();
+  u.status = String(data.status || '').trim();
+  u.emoji = data.emoji || u.emoji;
+  u.color = data.color || u.color;
+  if(data.password) u.password = String(data.password);
+  save();
+  return { ok:true };
+}
+function popularTags(){
+  const count = {};
+  db.posts.forEach(p => p.tags.forEach(t => {
+    const k = t.toLowerCase(); count[k] = (count[k] || 0) + 1;
+  }));
+  return Object.keys(count).sort((a, b) => count[b] - count[a]).slice(0, 10);
+}
+
+/* ---------- Компоненты ---------- */
+function avatar(u, size){
+  size = size || 44;
+  const fs = Math.round(size * 0.46);
+  return `<div class="avatar" style="width:${size}px;height:${size}px;background:${esc(u.color)};font-size:${fs}px">${esc(u.emoji)}</div>`;
+}
+function emptyState(icon, text){
+  return `<div class="empty"><span class="eico">${icon}</span>${esc(text)}</div>`;
+}
+function tagChip(t){
+  return `<button class="chip tag" data-act="tag-filter" data-tag="${esc(t)}">#${esc(t)}</button>`;
+}
+function postTextHTML(t){
+  return esc(t).replace(/#([\wа-яё\-]{2,20})/gi, '<span class="hl" data-act="tag-filter" data-tag="$1">#$1</span>');
+}
+function postCard(p){
+  const a = userById(p.authorId);
+  if(!a) return '';
+  const liked = sessionId && p.likes.includes(sessionId);
+  const open = ui.openComments.has(p.id);
+  const g = p.groupId ? groupById(p.groupId) : null;
+  const mine = sessionId === p.authorId;
+  return `<article class="card post">
+    <div class="post-head">
+      ${avatar(a, 44)}
+      <div style="flex:1;min-width:0">
+        <div class="post-author">
+          <a href="#/user/${a.id}">${esc(a.name)}</a>
+          <span class="muted">@${esc(a.username)}</span>
+          ${a.online ? '<span class="online"><i class="dot"></i>в сети</span>' : ''}
+        </div>
+        <div class="post-meta">${timeAgo(p.createdAt)}${g ? ` · <a href="#/group/${g.id}">${esc(g.emoji)} ${esc(g.name)}</a>` : ''}</div>
+      </div>
+      ${mine ? `<button class="icon-btn" title="Удалить пост" data-act="del-post" data-id="${p.id}">✕</button>` : ''}
+    </div>
+    <div class="post-text">${postTextHTML(p.text)}</div>
+    ${p.tags.length ? `<div class="post-tags">${p.tags.map(tagChip).join('')}</div>` : ''}
+    <div class="post-actions">
+      <button class="post-btn${liked ? ' liked' : ''}" data-act="like" data-id="${p.id}">${liked ? '❤️' : '🤍'} ${p.likes.length}</button>
+      <button class="post-btn" data-act="toggle-comments" data-id="${p.id}">💬 ${p.comments.length}</button>
+      <span class="muted small" style="margin-left:auto">${p.likes.length ? p.likes.length + ' ' + plural(p.likes.length, ['лайк','лайка','лайков']) : ''}</span>
+    </div>
+    ${open ? commentsHTML(p) : ''}
+  </article>`;
+}
+function commentsHTML(p){
+  const list = p.comments.map(c => {
+    const a = userById(c.authorId); if(!a) return '';
+    const canDel = sessionId === c.authorId;
+    return `<div class="comment">
+      ${avatar(a, 32)}
+      <div class="comment-bubble">
+        <b>${esc(a.name)}</b> <span class="muted small">${timeAgo(c.createdAt)}</span>
+        ${canDel ? `<button class="icon-btn" style="float:right" title="Удалить" data-act="del-comment" data-p="${p.id}" data-id="${c.id}">✕</button>` : ''}
+        <p>${esc(c.text)}</p>
+      </div>
+    </div>`;
+  }).join('');
+  const form = sessionId
+    ? `<form class="comment-form" data-form="comment" data-id="${p.id}">
+         ${avatar(me(), 32)}
+         <input name="text" placeholder="Написать комментарий…" autocomplete="off">
+         <button class="btn btn-primary btn-sm">→</button>
+       </form>`
+    : `<div class="small muted"><a href="#/auth">Войдите</a>, чтобы комментировать</div>`;
+  return `<div class="comments">${list || '<div class="small muted">Комментариев пока нет</div>'}${form}</div>`;
+}
+function groupCard(g){
+  const owner = g.ownerId === sessionId;
+  const joined = !!sessionId && g.members.includes(sessionId);
+  const ownerUser = userById(g.ownerId);
+  let action = '';
+  if(sessionId){
+    if(owner) action = `<span class="badge owner">Вы владелец</span>`;
+    else action = `<button class="btn btn-sm${joined ? '' : ' btn-primary'}" data-act="toggle-group" data-id="${g.id}">${joined ? 'Выйти' : 'Вступить'}</button>`;
+  }else{
+    action = `<a class="btn btn-sm" href="#/auth">Вступить</a>`;
+  }
+  return `<article class="card group-card">
+    <a class="group-banner" style="--gc:${esc(g.color)}" href="#/group/${g.id}"><span>${esc(g.emoji)}</span></a>
+    <div class="group-body">
+      <div class="spread">
+        <h3><a href="#/group/${g.id}">${esc(g.name)}</a></h3>
+        <span class="chip cat">${esc(g.category)}</span>
+      </div>
+      <p>${esc(g.desc)}</p>
+      <div class="group-meta">
+        <span class="muted small">👥 ${g.members.length} ${plural(g.members.length, ['участник','участника','участников'])}</span>
+        <span class="muted small">· 📝 ${postCountOfGroup(g.id)}</span>
+        <span style="margin-left:auto">${action}</span>
+      </div>
+      ${ownerUser ? `<div class="row small muted">${avatar(ownerUser, 22)} Владелец: ${esc(ownerUser.name)}</div>` : ''}
+    </div>
+  </article>`;
+}
+function userCard(u, withAction){
+  const friend = !!sessionId && isFriend(sessionId, u.id);
+  const own = sessionId === u.id;
+  let action = '';
+  if(withAction && sessionId && !own){
+    action = `<button class="btn btn-sm${friend ? '' : ' btn-primary'}" data-act="friend" data-id="${u.id}">${friend ? 'Убрать' : '➕ Друг'}</button>`;
+  }else if(own){
+    action = `<a class="btn btn-sm" href="#/profile">Это вы</a>`;
+  }
+  return `<div class="card user-card">
+    ${avatar(u, 46)}
+    <div class="uinfo">
+      <b><a href="#/user/${u.id}">${esc(u.name)}</a> <span class="muted" style="font-weight:500">@${esc(u.username)}</span></b>
+      <p>${esc(u.bio || u.status || 'Без описания')}</p>
+    </div>
+    ${u.online ? '<span class="dot" title="в сети"></span>' : ''}
+    ${action}
+  </div>`;
+}
+/* ---------- Шапка и подвал ---------- */
+function header(r){
+  const u = me();
+  const active = h => r.head === h ? ' class="active"' : '';
+  const q = r.head === 'search' ? r.arg : '';
+  const auth = u
+    ? `<div class="userbox">
+         <a class="uname" href="#/profile">${esc(u.name)}</a>
+         <a href="#/profile" title="Личный кабинет">${avatar(u, 36)}</a>
+         <button class="btn btn-sm" data-act="logout" title="Выйти">Выйти</button>
+       </div>`
+    : `<div class="userbox">
+         <a class="btn btn-sm" href="#/auth">Войти</a>
+         <a class="btn btn-primary btn-sm" href="#/auth/reg">Регистрация</a>
+       </div>`;
+  return `<header class="topbar">
+    <div class="container topbar-inner">
+      <a class="logo" href="#/"><span class="logo-mark">R</span>RoHub</a>
+      <form class="search" data-form="search">
+        <input name="q" placeholder="Поиск игроков и групп…" value="${esc(q)}" autocomplete="off">
+      </form>
+      <nav class="nav">
+        <a href="#/"${active('home')}>Главная</a>
+        <a href="#/wall"${active('wall')}>Стена</a>
+        <a href="#/groups"${active('groups')}>Группы</a>
+      </nav>
+      ${auth}
+    </div>
+  </header>`;
+}
+function footer(){
+  return `<footer class="footer"><div class="container row">
+    <div><b>RoHub</b> — демо-сообщество любителей Roblox</div>
+    <div>Данные хранятся локально в вашем браузере (localStorage) · ${new Date().getFullYear()}</div>
+  </div></footer>`;
+}
+
+/* ---------- Главная ---------- */
+function viewHome(){
+  const u = me();
+  const topPosts = [...db.posts].sort((a, b) =>
+    b.likes.length - a.likes.length || b.createdAt - a.createdAt).slice(0, 3);
+  const topGroups = [...db.groups].sort((a, b) => b.members.length - a.members.length).slice(0, 3);
+
+  if(!u){
+    return `<section class="card hero">
+      <div>
+        <span class="hero-badge">🎮 Демо-сообщество</span>
+        <h1>Место, где живут любители Roblox</h1>
+        <p>Личный кабинет, стена постов, группы по интересам и друзья — всё в одном светлом и простом сообществе.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#/auth/reg">Создать аккаунт</a>
+          <a class="btn" href="#/wall">Смотреть стену</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="art-tile"><span>🪪</span><b>Личный кабинет</b><i>профиль и статистика</i></div>
+        <div class="art-tile"><span>📝</span><b>Стена</b><i>посты, лайки, комменты</i></div>
+        <div class="art-tile"><span>👥</span><b>Группы</b><i>по играм и темам</i></div>
+        <div class="art-tile"><span>💬</span><b>Общение</b><i>друзья и теги</i></div>
+      </div>
+    </section>
+
+    <div class="features">
+      <div class="card feature"><div class="fico">🪪</div><h3>Личный кабинет</h3>
+        <p>Аватар, статус, био, статистика постов и лайков, список друзей и групп.</p></div>
+      <div class="card feature"><div class="fico" style="background:#e3f9ef">📝</div><h3>Стена сообщества</h3>
+        <p>Публикуйте посты с тегами, ставьте лайки и комментируйте чужие записи.</p></div>
+      <div class="card feature"><div class="fico" style="background:#efe9ff">👥</div><h3>Группы по интересам</h3>
+        <p>Создавайте группы, вступайте в существующие и ведите общий стену группы.</p></div>
+    </div>
+
+    <div class="section-row"><h2 class="section-title">🔥 Популярное на стене</h2>
+      <a href="#/wall">Вся стена →</a></div>
+    <div class="stack">${topPosts.map(postCard).join('')}</div>
+
+    <div class="section-row"><h2 class="section-title">👥 Активные группы</h2>
+      <a href="#/groups">Все группы →</a></div>
+    <div class="group-grid">${topGroups.map(groupCard).join('')}</div>`;
+  }
+
+  const feed = [...db.posts].sort((a, b) => b.createdAt - a.createdAt);
+  const myG = userGroups(u.id);
+  const fr = friendsOf(u.id);
+  return `<section class="card greet">
+    <div class="row">
+      ${avatar(u, 56)}
+      <div>
+        <h1>Привет, ${esc(u.name)}! 👋</h1>
+        <div class="muted small">${esc(u.status || 'Рады видеть вас снова')}</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${userPosts(u.id).length}</b><span>${plural(userPosts(u.id).length, ['пост','поста','постов'])}</span></div>
+      <div class="stat"><b>${likesReceived(u.id)}</b><span>${plural(likesReceived(u.id), ['лайк','лайка','лайков'])}</span></div>
+      <div class="stat"><b>${fr.length}</b><span>${plural(fr.length, ['друг','друга','друзей'])}</span></div>
+      <div class="stat"><b>${myG.length}</b><span>${plural(myG.length, ['группа','группы','групп'])}</span></div>
+    </div>
+  </section>
+
+  <div class="grid-2" style="margin-top:20px">
+    <div>
+      <div class="section-row"><h2 class="section-title">📝 Свежее на стене</h2>
+        <a href="#/wall">Открыть стену →</a></div>
+      <div class="stack">${feed.slice(0, 5).map(postCard).join('') || emptyState('📭', 'Постов пока нет')}</div>
+    </div>
+    <aside class="stack">
+      <div class="card card-pad">
+        <div class="spread"><b>Мои группы</b><a class="small" href="#/groups">Все →</a></div>
+        <div class="stack" style="margin-top:12px;gap:10px">
+          ${myG.length ? myG.map(g => `
+            <a class="row" href="#/group/${g.id}" style="color:inherit">
+              <span style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+                background:${esc(g.color)}22;font-size:18px">${esc(g.emoji)}</span>
+              <span style="flex:1;min-width:0"><b style="font-size:14px;display:block">${esc(g.name)}</b>
+              <span class="muted small">${g.members.length} участн.</span></span>
+            </a>`).join('')
+            : '<div class="small muted">Вы ещё не вступили ни в одну группу</div>'}
+        </div>
+        <a class="btn btn-soft btn-sm btn-block" style="margin-top:12px" href="#/groups">Найти группу</a>
+      </div>
+      <div class="card card-pad">
+        <div class="spread"><b>Друзья</b><span class="muted small">${fr.length}</span></div>
+        <div class="stack" style="margin-top:12px;gap:10px">
+          ${fr.length ? fr.map(f => `
+            <a class="row" href="#/user/${f.id}" style="color:inherit">
+              ${avatar(f, 34)}
+              <span style="flex:1;min-width:0"><b style="font-size:14px;display:block">${esc(f.name)}</b>
+              <span class="muted small">${f.online ? 'в сети' : 'не в сети'}</span></span>
+              <i class="dot${f.online ? '' : ' off'}"></i>
+            </a>`).join('')
+            : '<div class="small muted">Пока пусто — зайдите на профиль其他玩家</div>'}
+        </div>
+      </div>
+      <div class="card card-pad">
+        <b>🔥 Популярные теги</b>
+        <div class="chips" style="margin:12px 0 0">${popularTags().map(tagChip).join('') || '<span class="small muted">Нет тегов</span>'}</div>
+      </div>
+    </aside>
+  </div>`;
+}
+
+/* ---------- Стена ---------- */
+function viewWall(){
+  const u = me();
+  let list = [...db.posts].sort((a, b) => b.createdAt - a.createdAt);
+  if(ui.wallFilter === 'mine') list = list.filter(p => p.authorId === sessionId);
+  if(ui.wallFilter === 'friends')
+    list = list.filter(p => p.authorId === sessionId || isFriend(sessionId, p.authorId));
+  if(ui.wallTag)
+    list = list.filter(p => p.tags.some(t => t.toLowerCase() === ui.wallTag.toLowerCase()));
+
+  const composer = u ? `<form class="card composer" data-form="post">
+      <div class="row" style="align-items:flex-start">
+        ${avatar(u, 44)}
+        <textarea name="text" placeholder="Что нового, ${esc(u.name.split(' ')[0])}? Расскажите, чем занялись в Roblox. Добавляйте #теги" required></textarea>
+      </div>
+      <div class="composer-foot">
+        <span class="muted small">💡 Теги пишутся слитно: #билдерство #brookhaven</span>
+        <button class="btn btn-primary">Опубликовать</button>
+      </div>
+      <p class="err" id="err-post"></p>
+    </form>`
+    : `<div class="card card-pad spread" style="flex-wrap:wrap">
+        <div><b>Войдите, чтобы публиковать посты</b>
+          <div class="muted small">Читать стену можно без аккаунта</div></div>
+        <div class="row"><a class="btn" href="#/auth">Войти</a>
+          <a class="btn btn-primary" href="#/auth/reg">Регистрация</a></div>
+      </div>`;
+
+  const f = (key, label) =>
+    `<button class="tab${ui.wallFilter === key ? ' active' : ''}" data-act="wall-filter" data-filter="${key}">${label}</button>`;
+
+  return `<h1 style="font-size:24px;margin:4px 0 2px">📝 Стена сообщества</h1>
+    <p class="muted" style="margin:0 0 16px">Посты всех игроков: лайки, комментарии и теги</p>
+    ${composer}
+    <div class="tabs-row">
+      <div class="tabs">${f('all', 'Все')}${f('friends', 'Друзья')}${f('mine', 'Мои')}</div>
+      ${ui.wallTag ? `<button class="chip active" data-act="clear-tag">#${esc(ui.wallTag)} ✕</button>` : ''}
+      <span class="muted small" style="margin-left:auto">${list.length} ${plural(list.length, ['запись','записи','записей'])}</span>
+    </div>
+    <div class="chips">${popularTags().map(tagChip).join('')}</div>
+    <div class="stack">${list.map(postCard).join('')
+      || emptyState('🔍', ui.wallTag ? 'Записей с этим тегом нет' : 'Здесь пока пусто')}</div>`;
+}
+/* ---------- Группы (каталог) ---------- */
+function viewGroups(){
+  const cats = ['Все', ...new Set(db.groups.map(g => g.category))];
+  const cat = ui.groupCat || 'Все';
+  let list = [...db.groups].sort((a, b) => b.members.length - a.members.length);
+  if(cat !== 'Все') list = list.filter(g => g.category === cat);
+
+  const createBtn = sessionId
+    ? `<button class="btn btn-primary" data-act="open-modal" data-modal="group">➕ Создать группу</button>`
+    : `<a class="btn btn-primary" href="#/auth">Войти, чтобы создать</a>`;
+
+  return `<div class="spread" style="margin-bottom:18px">
+      <div><h1 style="font-size:24px">👥 Группы</h1>
+        <div class="muted small">${db.groups.length} ${plural(db.groups.length, ['группа','группы','групп'])} в сообществе</div></div>
+      ${createBtn}
+    </div>
+    <div class="chips">${cats.map(c =>
+      `<button class="chip${cat === c ? ' active' : ''}" data-act="group-cat" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+    <div class="group-grid">${list.map(groupCard).join('')
+      || emptyState('🗂️', 'В этой категории групп нет')}</div>`;
+}
+
+/* ---------- Страница группы ---------- */
+function viewGroup(id){
+  const g = groupById(id);
+  if(!g) return emptyState('😕', 'Группа не найдена');
+  const owner = userById(g.ownerId);
+  const joined = !!sessionId && g.members.includes(sessionId);
+  const isOwner = g.ownerId === sessionId;
+  const posts = db.posts.filter(p => p.groupId === g.id)
+    .sort((a, b) => b.createdAt - a.createdAt);
+
+  let action = '';
+  if(isOwner){
+    action = `<span class="badge owner">Вы владелец</span>
+      <button class="btn btn-danger btn-sm" data-act="del-group" data-id="${g.id}">Удалить группу</button>`;
+  }else if(sessionId){
+    action = `<button class="btn${joined ? '' : ' btn-primary'}" data-act="toggle-group" data-id="${g.id}">${joined ? 'Выйти из группы' : '➕ Вступить'}</button>`;
+  }else{
+    action = `<a class="btn btn-primary" href="#/auth">Вступить</a>`;
+  }
+
+  const tabBtn = (key, label) =>
+    `<button class="tab${ui.groupTab === key ? ' active' : ''}" data-act="group-tab" data-tab="${key}">${label}</button>`;
+
+  let body = '';
+  if(ui.groupTab === 'wall'){
+    const composer = (joined || isOwner)
+      ? `<form class="card composer" data-form="post" data-group="${g.id}">
+          <div class="row" style="align-items:flex-start">
+            ${avatar(me(), 44)}
+            <textarea name="text" placeholder="Новости и обсуждения группы ${esc(g.name)}… #теги" required></textarea>
+          </div>
+          <div class="composer-foot">
+            <span class="muted small">Пост появится на стене группы</span>
+            <button class="btn btn-primary">Опубликовать</button>
+          </div>
+          <p class="err" id="err-post"></p>
+        </form>`
+      : '';
+    body = `${composer}<div class="stack" style="margin-top:${composer ? '16px' : '0'}">
+      ${posts.map(postCard).join('') || emptyState('📝', 'На стене группы пока пусто')}</div>`;
+  }else{
+    const members = g.members.map(userById).filter(Boolean)
+      .sort((a, b) => (b.id === g.ownerId ? 1 : 0) - (a.id === g.ownerId ? 1 : 0));
+    body = `<div class="user-list">${members.map(m => userCard(m, true)).join('')}</div>`;
+  }
+
+  return `<section class="card group-hero">
+      <div class="gbanner" style="--gc:${esc(g.color)}">${esc(g.emoji)}</div>
+      <div class="gbody">
+        <div class="spread" style="align-items:flex-end">
+          <div class="avatar gavatar" style="background:${esc(g.color)}">${esc(g.emoji)}</div>
+          <div class="row" style="padding-bottom:6px">${action}</div>
+        </div>
+        <div class="row" style="margin-top:14px;gap:10px;flex-wrap:wrap">
+          <h1>${esc(g.name)}</h1>
+          <span class="chip cat">${esc(g.category)}</span>
+          ${joined && !isOwner ? '<span class="badge green">Вы участник</span>' : ''}
+        </div>
+        <p class="gdesc">${esc(g.desc)}</p>
+        <div class="row muted small" style="margin-top:14px;gap:18px;flex-wrap:wrap">
+          <span>👥 ${g.members.length} ${plural(g.members.length, ['участник','участника','участников'])}</span>
+          <span>📝 ${posts.length} ${plural(posts.length, ['пост','поста','постов'])}</span>
+          <span>📅 Создана ${dateFull(g.createdAt)}</span>
+          ${owner ? `<span>👑 Владелец: <a href="#/user/${owner.id}">${esc(owner.name)}</a></span>` : ''}
+        </div>
+      </div>
+    </section>
+    <div class="tabs-row">
+      <div class="tabs">${tabBtn('wall', 'Стена группы')}${tabBtn('members', `Участники (${g.members.length})`)}</div>
+    </div>
+    ${body}`;
+}
+
+/* ---------- Личный кабинет / профиль игрока ---------- */
+function viewProfile(id){
+  const u = userById(id);
+  if(!u) return emptyState('😕', 'Игрок не найден');
+  const own = sessionId === u.id;
+  const posts = userPosts(u.id).sort((a, b) => b.createdAt - a.createdAt);
+  const groups = userGroups(u.id);
+  const friends = friendsOf(u.id);
+  const friend = own ? false : isFriend(sessionId, u.id);
+
+  const actions = own
+    ? `<button class="btn" data-act="open-modal" data-modal="profile">⚙️ Редактировать</button>
+       <button class="btn btn-danger" data-act="logout">Выйти</button>`
+    : sessionId
+      ? `<button class="btn${friend ? '' : ' btn-primary'}" data-act="friend" data-id="${u.id}">${friend ? '💔 Убрать из друзей' : '➕ Добавить в друзья'}</button>
+         <a class="btn" href="#/wall">На стену</a>`
+      : `<a class="btn btn-primary" href="#/auth">Войти</a>`;
+
+  const tabBtn = (key, label) =>
+    `<button class="tab${ui.profTab === key ? ' active' : ''}" data-act="prof-tab" data-tab="${key}">${label}</button>`;
+
+  let body = '';
+  if(ui.profTab === 'posts'){
+    body = `<div class="stack">${posts.map(postCard).join('')
+      || emptyState('📭', own ? 'Вы ещё ничего не публиковали' : 'Игрок ещё ничего не публиковал')}</div>`;
+  }else if(ui.profTab === 'groups'){
+    body = groups.length
+      ? `<div class="group-grid">${groups.map(groupCard).join('')}</div>`
+      : emptyState('👥', own ? 'Вы не состоите ни в одной группе' : 'Игрок не состоит в группах');
+  }else{
+    body = friends.length
+      ? `<div class="user-list">${friends.map(f => userCard(f, own)).join('')}</div>`
+      : emptyState('🧑‍🤝‍🧑', 'Список друзей пуст');
+  }
+
+  return `<section class="card profile-head">
+      <div class="profile-top">
+        ${avatar(u, 92)}
+        <div class="profile-info">
+          <h1>${esc(u.name)} ${u.online ? '<span class="online"><i class="dot"></i>в сети</span>' : ''}</h1>
+          <div class="handle">@${esc(u.username)} ${u.status ? `· ${esc(u.status)}` : ''}</div>
+          ${u.bio ? `<p class="profile-bio">${esc(u.bio)}</p>` : ''}
+          <div class="muted small" style="margin-top:8px">📅 В сообществе с ${dateFull(u.createdAt)}</div>
+        </div>
+        <div class="profile-actions">${actions}</div>
+      </div>
+      <div class="profile-stats">
+        <div class="stat"><b>${posts.length}</b><span>${plural(posts.length, ['пост','поста','постов'])}</span></div>
+        <div class="stat"><b>${likesReceived(u.id)}</b><span>${plural(likesReceived(u.id), ['лайк','лайка','лайков'])}</span></div>
+        <div class="stat"><b>${friends.length}</b><span>${plural(friends.length, ['друг','друга','друзей'])}</span></div>
+        <div class="stat"><b>${groups.length}</b><span>${plural(groups.length, ['группа','группы','групп'])}</span></div>
+      </div>
+    </section>
+    <div class="tabs-row">
+      <div class="tabs">${tabBtn('posts', `Посты (${posts.length})`)}
+        ${tabBtn('groups', `Группы (${groups.length})`)}
+        ${tabBtn('friends', `Друзья (${friends.length})`)}</div>
+    </div>
+    ${body}`;
+}
+
+/* ---------- Авторизация ---------- */
+function viewAuth(tab){
+  if(tab !== 'reg' && tab !== 'login') tab = 'login';
+  const t = (key, label) =>
+    `<button class="tab${tab === key ? ' active' : ''}" data-act="auth-tab" data-tab="${key}">${label}</button>`;
+
+  const loginForm = `<form data-form="login">
+      <div class="field"><label class="label" for="l-user">Ник</label>
+        <input class="input" id="l-user" name="username" placeholder="BlockMaster" autocomplete="username" required></div>
+      <div class="field"><label class="label" for="l-pass">Пароль</label>
+        <input class="input" id="l-pass" name="password" type="password" placeholder="••••••" autocomplete="current-password" required></div>
+      <p class="err" id="err-login"></p>
+      <button class="btn btn-primary btn-block">Войти</button>
+      <div class="hint">Демо-доступ: ник <code>BlockMaster</code>, пароль <code>123456</code>.
+        <button type="button" class="btn btn-soft btn-sm" style="margin-top:8px" data-act="demo-login">⚡ Войти мгновенно</button></div>
+    </form>`;
+
+  const emojis = ['🙂','😎','🐱','🥷','🌸','🛹','👑','🎮','🦊','🐼','🤖','👾'];
+  const colors = ['#00a2ff','#ff6b9d','#7c5cff','#ffb703','#00b06f','#ff4d4f','#0ea5e9','#8b5cf6'];
+  const regForm = `<form data-form="register">
+      <div class="field"><label class="label" for="r-user">Ник (латиница)</label>
+        <input class="input" id="r-user" name="username" placeholder="MyNick123" autocomplete="username" required></div>
+      <div class="field"><label class="label" for="r-name">Отображаемое имя</label>
+        <input class="input" id="r-name" name="name" placeholder="Ваше имя" required></div>
+      <div class="field"><label class="label" for="r-pass">Пароль</label>
+        <input class="input" id="r-pass" name="password" type="password" placeholder="От 4 символов" autocomplete="new-password" required></div>
+      <div class="field"><label class="label" for="r-pass2">Повторите пароль</label>
+        <input class="input" id="r-pass2" name="password2" type="password" autocomplete="new-password" required></div>
+      <div class="field"><span class="label">Эмодзи аватара</span>
+        <div class="pickers">${emojis.map((e, i) =>
+          `<button type="button" class="pick-emoji${i === 0 ? ' on' : ''}" data-act="pick-emoji" data-v="${e}">${e}</button>`).join('')}</div></div>
+      <div class="field"><span class="label">Цвет аватара</span>
+        <div class="pickers">${colors.map((c, i) =>
+          `<button type="button" class="pick-color${i === 0 ? ' on' : ''}" data-act="pick-color" data-v="${c}" style="background:${c}"></button>`).join('')}</div></div>
+      <p class="err" id="err-register"></p>
+      <button class="btn btn-primary btn-block">Создать аккаунт</button>
+    </form>`;
+
+  return `<div class="auth-wrap"><div class="card auth-card">
+      <div class="row" style="justify-content:center;margin-bottom:4px">
+        <span class="logo-mark">R</span></div>
+      <h1 style="text-align:center">${tab === 'login' ? 'С возвращением!' : 'Присоединяйтесь к RoHub'}</h1>
+      <p class="muted small" style="text-align:center;margin:6px 0 0">Сообщество любителей Roblox</p>
+      <div class="auth-tabs">${t('login', 'Вход')}${t('reg', 'Регистрация')}</div>
+      ${tab === 'login' ? loginForm : regForm}
+    </div></div>`;
+}
+
+/* ---------- Поиск ---------- */
+function viewSearch(q){
+  const query = String(q || '').trim().toLowerCase();
+  const users = db.users.filter(u =>
+    u.name.toLowerCase().includes(query) || u.username.toLowerCase().includes(query));
+  const groups = db.groups.filter(g =>
+    g.name.toLowerCase().includes(query) || g.desc.toLowerCase().includes(query) ||
+    g.category.toLowerCase().includes(query));
+  if(!query) return emptyState('🔎', 'Введите запрос для поиска');
+  return `<h1 style="font-size:22px;margin-bottom:6px">🔎 Результаты поиска</h1>
+    <p class="muted" style="margin-top:0">По запросу «${esc(q)}»: ${users.length} игроков, ${groups.length} групп</p>
+    ${users.length ? `<h2 class="section-title">Игроки</h2>
+      <div class="user-list">${users.map(u => userCard(u, true)).join('')}</div>` : ''}
+    ${groups.length ? `<h2 class="section-title">Группы</h2>
+      <div class="group-grid">${groups.map(groupCard).join('')}</div>` : ''}
+    ${!users.length && !groups.length ? emptyState('🕳️', 'Никого и ничего не найдено') : ''}`;
+}
+/* ---------- Модальные окна ---------- */
+const EMOJIS = ['🙂','😎','🐱','🥷','🌸','🛹','👑','🎮','🦊','🐼','🤖','👾'];
+const COLORS = ['#00a2ff','#ff6b9d','#7c5cff','#ffb703','#00b06f','#ff4d4f','#0ea5e9','#8b5cf6'];
+const CATEGORIES = ['Игры','Строительство','Разработка','Стримы','Общение','Другое'];
+
+function modalHTML(){
+  if(!ui.modal) return '';
+  const m = ui.modal;
+  if(m.type === 'group'){
+    const d = m.data;
+    return `<div class="modal-overlay" data-act="close-modal">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-head"><h2>➕ Создать группу</h2>
+          <button class="icon-btn" data-act="close-modal">✕</button></div>
+        <form data-form="group-create">
+          <div class="modal-body">
+            <div class="field"><label class="label">Название</label>
+              <input class="input" data-f="name" value="${esc(d.name || '')}" placeholder="Например: Клуб фанатов Doors" required></div>
+            <div class="field"><label class="label">Описание</label>
+              <textarea class="input" data-f="desc" rows="3" placeholder="О чём группа?">${esc(d.desc || '')}</textarea></div>
+            <div class="field"><label class="label">Категория</label>
+              <select class="input" data-f="category">${CATEGORIES.map(c =>
+                `<option${d.category === c ? ' selected' : ''}>${c}</option>`).join('')}</select></div>
+            <div class="field"><span class="label">Эмодзи</span>
+              <div class="pickers">${EMOJIS.map(e =>
+                `<button type="button" class="pick-emoji${(d.emoji || '🎮') === e ? ' on' : ''}" data-act="pick-emoji" data-v="${e}">${e}</button>`).join('')}</div></div>
+            <div class="field"><span class="label">Цвет</span>
+              <div class="pickers">${COLORS.map(c =>
+                `<button type="button" class="pick-color${(d.color || '#00a2ff') === c ? ' on' : ''}" data-act="pick-color" data-v="${c}" style="background:${c}"></button>`).join('')}</div></div>
+            <p class="err" id="err-group"></p>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn" data-act="close-modal">Отмена</button>
+            <button class="btn btn-primary">Создать</button>
+          </div>
+        </form>
+      </div></div>`;
+  }
+  if(m.type === 'profile'){
+    const d = m.data;
+    return `<div class="modal-overlay" data-act="close-modal">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-head"><h2>⚙️ Редактировать профиль</h2>
+          <button class="icon-btn" data-act="close-modal">✕</button></div>
+        <form data-form="profile-save">
+          <div class="modal-body">
+            <div class="field"><label class="label">Отображаемое имя</label>
+              <input class="input" data-f="name" value="${esc(d.name || '')}" required></div>
+            <div class="field"><label class="label">Статус</label>
+              <input class="input" data-f="status" value="${esc(d.status || '')}" placeholder="Чем вы заняты?"></div>
+            <div class="field"><label class="label">О себе</label>
+              <textarea class="input" data-f="bio" rows="3" placeholder="Расскажите о себе">${esc(d.bio || '')}</textarea></div>
+            <div class="field"><span class="label">Эмодзи аватара</span>
+              <div class="pickers">${EMOJIS.map(e =>
+                `<button type="button" class="pick-emoji${(d.emoji || '🙂') === e ? ' on' : ''}" data-act="pick-emoji" data-v="${e}">${e}</button>`).join('')}</div></div>
+            <div class="field"><span class="label">Цвет аватара</span>
+              <div class="pickers">${COLORS.map(c =>
+                `<button type="button" class="pick-color${(d.color || '#00a2ff') === c ? ' on' : ''}" data-act="pick-color" data-v="${c}" style="background:${c}"></button>`).join('')}</div></div>
+            <div class="field"><label class="label">Новый пароль (необязательно)</label>
+              <input class="input" data-f="password" type="password" placeholder="Оставьте пустым, чтобы не менять"></div>
+            <div class="field"><label class="label">Повторите новый пароль</label>
+              <input class="input" data-f="password2" type="password"></div>
+            <p class="err" id="err-profile"></p>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn" data-act="close-modal">Отмена</button>
+            <button class="btn btn-primary">Сохранить</button>
+          </div>
+        </form>
+      </div></div>`;
+  }
+  return '';
+}
+function syncModalInputs(){
+  if(!ui.modal) return;
+  document.querySelectorAll('.modal [data-f]').forEach(el => {
+    ui.modal.data[el.dataset.f] = el.value;
+  });
+}
+function openModal(type){
+  if(!sessionId){ location.hash = '#/auth'; return; }
+  const d = type === 'profile'
+    ? (() => { const u = me(); return { name:u.name, status:u.status, bio:u.bio, emoji:u.emoji, color:u.color }; })()
+    : { emoji:'🎮', color:'#00a2ff', category:'Игры' };
+  ui.modal = { type, data:d };
+  render(true);
+}
+function closeModal(){ ui.modal = null; render(true); }
+
+/* ---------- Роутер ---------- */
+function route(){
+  const raw = location.hash.replace(/^#\/?/, '');
+  const i = raw.indexOf('/');
+  const head = i === -1 ? raw : raw.slice(0, i);
+  const arg = i === -1 ? '' : decodeURIComponent(raw.slice(i + 1));
+  return { head: head || 'home', arg };
+}
+function render(keepScroll){
+  const r = route();
+  if(r.head === 'profile' && !sessionId){ location.hash = '#/auth'; return; }
+  if(r.head === 'auth' && sessionId){ location.hash = '#/'; return; }
+  if(r.head === 'group') ui.groupTab = ui.groupTab || 'wall';
+
+  const y = window.scrollY;
+  let view = '';
+  switch(r.head){
+    case 'home':    view = viewHome(); break;
+    case 'wall':    view = viewWall(); break;
+    case 'groups':  view = viewGroups(); break;
+    case 'group':   view = viewGroup(r.arg); break;
+    case 'profile': view = viewProfile(sessionId); break;
+    case 'user':    view = viewProfile(r.arg); break;
+    case 'auth':    view = viewAuth(r.arg); break;
+    case 'search':  view = viewSearch(r.arg); break;
+    default:        view = emptyState('🧭', 'Страница не найдена');
+  }
+  document.getElementById('app').innerHTML =
+    header(r) + `<main class="container main">${view}</main>` + footer() + modalHTML();
+
+  document.body.style.overflow = ui.modal ? 'hidden' : '';
+  const titles = { home:'Главная', wall:'Стена', groups:'Группы', group:'Группа',
+    profile:'Личный кабинет', user:'Профиль', auth:'Вход', search:'Поиск' };
+  document.title = 'RoHub — ' + (titles[r.head] || 'Сообщество');
+  window.scrollTo(0, keepScroll ? y : 0);
+}
+window.addEventListener('hashchange', () => render(false));
+
+/* ---------- События: клики ---------- */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const act = el.dataset.act;
+  const id = el.dataset.id;
+
+  switch(act){
+    case 'like': toggleLike(id); break;
+    case 'del-post': deletePost(id); break;
+    case 'toggle-comments': toggleComments(id); break;
+    case 'del-comment': deleteComment(el.dataset.p, id); break;
+    case 'toggle-group': toggleGroup(id); break;
+    case 'del-group': deleteGroup(id); break;
+    case 'friend': toggleFriend(id); break;
+    case 'logout': logout(); break;
+
+    case 'wall-filter':
+      ui.wallFilter = el.dataset.filter; render(true); break;
+    case 'tag-filter':
+      e.preventDefault();
+      ui.wallTag = el.dataset.tag; ui.wallFilter = 'all';
+      if(route().head !== 'wall') location.hash = '#/wall'; else render(true);
+      break;
+    case 'clear-tag': ui.wallTag = null; render(true); break;
+    case 'group-cat': ui.groupCat = el.dataset.cat; render(true); break;
+    case 'group-tab': ui.groupTab = el.dataset.tab; render(true); break;
+    case 'prof-tab': ui.profTab = el.dataset.tab; render(true); break;
+    case 'auth-tab':
+      location.hash = el.dataset.tab === 'reg' ? '#/auth/reg' : '#/auth';
+      break;
+
+    case 'open-modal': openModal(el.dataset.modal); break;
+    case 'close-modal': closeModal(); break;
+    case 'pick-emoji':
+      syncModalInputs(); ui.modal.data.emoji = el.dataset.v; render(true); break;
+    case 'pick-color':
+      syncModalInputs(); ui.modal.data.color = el.dataset.v; render(true); break;
+
+    case 'demo-login': {
+      const res = login('BlockMaster', DEMO_PASS);
+      if(res.ok){ toast('Вы вошли как BlockMaster', 'ok'); location.hash = '#/'; render(); }
+      break;
+    }
+  }
+});
+
+/* ---------- События: формы ---------- */
+document.addEventListener('submit', e => {
+  const form = e.target.closest('[data-form]');
+  if(!form) return;
+  e.preventDefault();
+  const kind = form.dataset.form;
+  const fd = new FormData(form);
+  const showErr = (msg, id) => { const el = document.getElementById(id); if(el) el.textContent = msg; };
+
+  if(kind === 'search'){
+    const q = String(fd.get('q') || '').trim();
+    if(q) location.hash = '#/search/' + encodeURIComponent(q);
+    return;
+  }
+  if(kind === 'login'){
+    const res = login(fd.get('username'), fd.get('password'));
+    if(!res.ok){ showErr(res.error, 'err-login'); return; }
+    toast('Добро пожаловать!', 'ok');
+    location.hash = '#/'; render();
+    return;
+  }
+  if(kind === 'register'){
+    const res = register({
+      username: fd.get('username'), name: fd.get('name'),
+      password: fd.get('password'), password2: fd.get('password2'),
+      emoji: ui.authEmoji || '🙂', color: ui.authColor || '#00a2ff'
+    });
+    if(!res.ok){ showErr(res.error, 'err-register'); return; }
+    toast('Аккаунт создан, ' + res.user.name + '!', 'ok');
+    ui.authEmoji = null; ui.authColor = null;
+    location.hash = '#/'; render();
+    return;
+  }
+  if(kind === 'post'){
+    const ok = createPost(fd.get('text'), form.dataset.group || null);
+    if(!ok) showErr('Напишите текст поста', 'err-post');
+    else render(true);
+    return;
+  }
+  if(kind === 'comment'){
+    const ok = addComment(form.dataset.id, fd.get('text'));
+    if(!ok) showErr && toast('Пустой комментарий', 'bad');
+    return;
+  }
+  if(kind === 'group-create'){
+    const res = createGroup(ui.modal.data);
+    if(!res.ok){ showErr(res.error, 'err-group'); return; }
+    ui.modal = null;
+    toast('Группа создана!', 'ok');
+    location.hash = '#/group/' + res.group.id;
+    render();
+    return;
+  }
+  if(kind === 'profile-save'){
+    syncModalInputs();
+    const res = saveProfile(ui.modal.data);
+    if(!res.ok){ showErr(res.error, 'err-profile'); return; }
+    ui.modal = null;
+    toast('Профиль сохранён', 'ok');
+    render(true);
+    return;
+  }
+});
+/* выбор эмодзи/цвета при регистрации (без модалки) */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act="pick-emoji"],[data-act="pick-color"]');
+  if(!el || ui.modal) return;
+  const isEmoji = el.dataset.act === 'pick-emoji';
+  const group = el.parentElement;
+  if(group) group.querySelectorAll(isEmoji ? '.pick-emoji' : '.pick-color')
+    .forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+  if(isEmoji) ui.authEmoji = el.dataset.v; else ui.authColor = el.dataset.v;
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && ui.modal) closeModal();
+});
+
+/* ---------- Старт ---------- */
+render(false);
+</script>
+</body>
+</html>
